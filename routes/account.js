@@ -45,7 +45,8 @@ router.post("/upload/done", (req, res) => {
 
     let infoDoc = {
         "password": req.body.password,
-        _id: createId()
+        _id: createId(),
+        expired: false
     }
     // Insert a single document, wait for promise so we can read it back
     /*
@@ -72,24 +73,41 @@ router.post("/upload/done", (req, res) => {
     // console.log(col.findOne(1))
 
 
-    const link = "localhost:3000/account/" + infoDoc._id + "/download"
+    const link = "localhost:3000/account/" + infoDoc._id
     res.render("accountFormDone", {link: link})
 })
 
-router.get("/:id/download", (req, res) => {
+router.get("/:id", (req, res) => {
     // query database using req.params.id
     const id = String(req.params.id)
-    const db = client.db(dbName);
-    const col = db.collection("info");
-    var password = ""
+    const db = client.db(dbName)
+    const col = db.collection("info")
 
     const myDoc = col.findOne({_id: id}, {password: 1})
-    const a = myDoc.then((result) => {
-        const c = result.password
+    myDoc.then((result) => {
+        const expired = result.expired
+        if (expired == false) {
+            const pwd = result.password
+            res.render("accountLink", {password: pwd, id: id})
+        }
+        else {
+            res.sendStatus(404)
+        }
         // console.log(result.password)
         // return password with that id
-        res.render("accountLink", {password: c})
     })
+})
+
+router.post("/:id/expire", (req, res) => {
+    const db = client.db(dbName)
+    const col = db.collection("info")
+    // const query = ({_id: req.params.id}, {password: 1})
+    const query = {_id: req.params.id}
+    const update = { $set: {expired: true}}
+    // const myDoc = col.findOne({_id: id}, {password: 1})
+    const myDoc = col.updateOne(query, update)
+
+    res.render("accountFormExpire")
 })
 
 function createId() {
