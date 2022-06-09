@@ -84,17 +84,24 @@ router.get("/:id", (req, res) => {
     const col = db.collection("info")
 
     const myDoc = col.findOne({_id: id}, {password: 1})
+    console.log(myDoc)
     myDoc.then((result) => {
-        const expired = result.expired
-        if (expired == false) {
-            const pwd = result.password
-            res.render("accountLink", {password: pwd, id: id})
-        }
-        else {
+        // if the id is not in the database, respond with 404
+        if (result == null) {
             res.sendStatus(404)
         }
-        // console.log(result.password)
-        // return password with that id
+        else {
+          const expired = result.expired
+          // if link has not expired, render password page
+          if (expired == false) {
+              const pwd = result.password
+              res.render("accountLink", {password: pwd, id: id})
+          }
+          // if link is expired, respond with 404
+          else {
+              res.sendStatus(404)
+          }
+        }
     })
 })
 
