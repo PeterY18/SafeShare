@@ -13,4 +13,8 @@ app.set("view engine", "ejs")
 const accountRouter = require("./routes/account")
 app.use("/account", accountRouter)
 
+// file router
+const fileRouter = require("./routes/file")
+app.use("/file", fileRouter)
+
 app.listen(3000)
