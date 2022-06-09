@@ -14,18 +14,17 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col">
-          <h1>Done!</h1>
-          <h2>Your password is: <b><%= locals.password %></b></h2>
-          <input class="d-none" type="text" value="<%= locals.password %>" id="pwd">
-          <button class="btn btn-success m-3" onclick="copy()">Copy Password</button>
+          <h1>Done! Your Link Is</h1>
+          <h2><br><b><%= locals.link %></b></h2>
+          <input class="d-none" type="text" value="<%= locals.link %>" id="link">
+          <button class="btn btn-success m-3" onclick="copy()">Copy Link</button>
           <script>
             function copy() {
-              const copyText = document.getElementById("pwd");
+              const copyText = document.getElementById("link");
               copyText.select();
               navigator.clipboard.writeText(copyText.value);
             } 
           </script>
-          <h2>You should probably change it after this demo</h2>
         </div>
       </div>
     </div>

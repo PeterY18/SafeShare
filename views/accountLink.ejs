@@ -16,14 +16,16 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col">
-          <h1>This Page contains the link</h1>
-          <form action="/account/upload/done" method="POST">
-            <div class="p-4">
-              <label for="" class="form-label">Password</label>
-              <input type="password" class="form-control" name="password">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-          </form>
+          <h1>This page contains the password</h1>
+          <input class="d-none" type="text" value="<%= locals.password %>" id="pwd">
+          <button class="btn btn-success m-3" onclick="copy()">Copy Password</button>
+          <script>
+            function copy() {
+              const copyText = document.getElementById("pwd");
+              copyText.select();
+              navigator.clipboard.writeText(copyText.value);
+            } 
+          </script>
         </div>
       </div>
     </div>
