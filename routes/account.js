@@ -38,42 +38,23 @@ async function main() {
 }
 
 router.post("/upload/done", (req, res) => {
-    // send password to database
-    
     const db = client.db(dbName);
     const col = db.collection("info");
 
+    // "model" that will be inserted into databaase
     let infoDoc = {
         "password": req.body.password,
         _id: createId(),
         expired: false
     }
+  
     // Insert a single document, wait for promise so we can read it back
-    /*
-    console.log("Before DB insert")
-    console.log("password: " + infoDoc.password)
-    console.log("id: " + infoDoc._id)
-    console.log()
-    */
-    const p = col.insertOne(infoDoc);
-    // Find one document
-    const searchId = new ObjectId(infoDoc.id)
-    // const myDoc = col.findOne(searchId);
-    const myDoc = col.findOne({_id: infoDoc._id}, {password: 1, _id: 0})
-    // Print to the console
-    /*
-    console.log("After DB insert")
-    console.log(myDoc);
-    myDoc.then((result) => {
-        console.log(result)
-    })
-    */
-
-
-    // console.log(col.findOne(1))
-
-
+     const p = col.insertOne(infoDoc);
+  
+    // generate link location
+    // TODO: fefactor to dyanamically create path using nodejs global var
     const link = "localhost:3000/account/" + infoDoc._id
+    
     res.render("accountFormDone", {link: link})
 })
 
@@ -84,7 +65,6 @@ router.get("/:id", (req, res) => {
     const col = db.collection("info")
 
     const myDoc = col.findOne({_id: id}, {password: 1})
-    console.log(myDoc)
     myDoc.then((result) => {
         // if the id is not in the database, respond with 404
         if (result == null) {
@@ -106,17 +86,22 @@ router.get("/:id", (req, res) => {
 })
 
 router.post("/:id/expire", (req, res) => {
+    // database connection
     const db = client.db(dbName)
     const col = db.collection("info")
-    // const query = ({_id: req.params.id}, {password: 1})
+    
+    // update row parameters
     const query = {_id: req.params.id}
     const update = { $set: {expired: true}}
-    // const myDoc = col.findOne({_id: id}, {password: 1})
-    const myDoc = col.updateOne(query, update)
+  
+    // update row
+    col.updateOne(query, update)
 
     res.render("accountFormExpire")
 })
 
+// create a random string of 12 characters
+// base-62 character set
 function createId() {
     let result = ""
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
