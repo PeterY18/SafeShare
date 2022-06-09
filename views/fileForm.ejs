@@ -17,12 +17,13 @@
       <div class="row justify-content-center">
         <div class="col">
           <h1>Upload a File</h1>
-          <form action="/file/upload/done" method="POST">
+          <form action="/file/upload/done" method="POST" enctype="multipart/form-data">
             <div class="p-4">
-              <label for="" class="form-label">File</label>
-              <input type="file" class="form-control" name="file">
+              <input type="file" class="form-control" name="file" id="file">
+              <label for="file" class="form-label">File</label>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+            <input type="submit" value="Submit" class="btn btn-primary btn-block">
           </form>
         </div>
       </div>
