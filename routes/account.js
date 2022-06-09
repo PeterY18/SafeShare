@@ -64,6 +64,7 @@ router.get("/:id", (req, res) => {
     const db = client.db(dbName)
     const col = db.collection("info")
 
+    // query database
     const myDoc = col.findOne({_id: id}, {password: 1})
     myDoc.then((result) => {
         // if the id is not in the database, respond with 404
@@ -74,8 +75,7 @@ router.get("/:id", (req, res) => {
           const expired = result.expired
           // if link has not expired, render password page
           if (expired == false) {
-              const pwd = result.password
-              res.render("accountLink", {password: pwd, id: id})
+              res.render("accountLink", {id: id})
           }
           // if link is expired, respond with 404
           else {
@@ -89,15 +89,23 @@ router.post("/:id/expire", (req, res) => {
     // database connection
     const db = client.db(dbName)
     const col = db.collection("info")
-    
+
+    // id variable
+    const id = String(req.params.id)
+
     // update row parameters
-    const query = {_id: req.params.id}
+    const query = {_id: id}
     const update = { $set: {expired: true}}
-  
+
     // update row
     col.updateOne(query, update)
 
-    res.render("accountFormExpire")
+    // get password from database to render to user
+    const myDoc = col.findOne({_id: id}, {password: 1})
+    myDoc.then((result) => {
+        const password = result.password
+        res.render("accountFormExpire", {password: password})
+    })
 })
 
 // create a random string of 12 characters

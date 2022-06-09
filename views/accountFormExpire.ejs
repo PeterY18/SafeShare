@@ -15,9 +15,35 @@
   <section class="p-5">
     <div class="container">
       <div class="row justify-content-center">
-        <div class="col">
-          <h1>You have copied the password</h1>
+        <div class="col-12">
+          <h1>This page has your password</h1>
           <h2>The link should now be expired</h2>
+          <h2>Make sure to close this page when you are done!</h2>
+
+          <input class="" type="password" value="<%= locals.password %>"
+          id="pwd" class="form-control">
+          <input type="checkbox" onclick="show()">
+          Show password
+          <button class="btn btn-success m-3" onclick="copy()">
+          Copy Password</button>
+
+          <script>
+            function copy() {
+              const copyText = document.getElementById("pwd");
+              copyText.select();
+              navigator.clipboard.writeText(copyText.value);
+            } 
+
+            function show() {
+              let x = document.getElementById("pwd");
+              if (x.type === "password") {
+                x.type = "text";
+              } 
+              else {
+                x.type = "password";
+              }
+            }
+          </script>
         </div>
       </div>
     </div>

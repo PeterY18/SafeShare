@@ -18,14 +18,9 @@
         <div class="col">
 
           <form action="/account/<%= locals.id %>/expire" method="POST">
-            <div class="p-4">
-              <input type="password" class="d-none" name="password"
-              value="<%= locals.password %>" id="pwd">
-            </div>
             <button type="submit" class="btn btn-primary"
-            onclick="copy()">Copy Password</button>
+            >Securely Get Password</button>
           </form>
- 
 
           <script>
             function copy() {
