@@ -1,0 +1,45 @@
+body{
+    font-family: Arial, sans-serif;
+     background:url("blue.png") no-repeat center center fixed; 
+}
+
+
+.boxed {
+    position: relative;
+    top: 0px;
+   margin: auto;
+    width: 50%;
+    border: 3px solid #FFFFFF;
+    padding: 10px;
+     height: 400px ;
+     background: #FFFFFF; 
+  }
+
+  .boxed1 {
+    position: relative;
+    top: 0px;
+   margin: auto;
+    width: 50%;
+    border: 3px solid #FFFFFF;
+    padding: 10px;
+     height: 200px ;
+     background: #FFFFFF; 
+  }
+
+  
+  
+
+  h2 {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    color:  #FFFFFF;
+    margin: 100px 0;}
+
+
+    h3{
+        text-align: center;
+        font-family: Arial, sans-serif;
+        font-size: 20px;
+        color:  #000000;
+        margin: 100px 0;} 
