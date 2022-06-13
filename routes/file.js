@@ -74,6 +74,31 @@ router.get("/upload", (req, res) => {
 })
 
 router.post("/upload/done", upload.single("file"), (req, res) => {
+    const link = "localhost:3000/file/" + id
+    res.render("fileFormDone", {link: link})
+})
+
+router.get("/:id", (req, res) => {
+    const linkId = req.params.id
+    const db = client.db(dbName)
+    const col = db.collection("info")
+
+    const myDoc = gfs.collection("uploads").findOne({_id: linkId}, {password: 1})
+    myDoc.then((result) => {
+        if (result == null) {
+            res.sendStatus(404)
+        }
+        else {
+            const dateMade = result.uploadDate
+            // console.log(dateMade)
+            // console.log(typeof dateMade)
+            res.render("fileLink", {id: linkId})
+        }
+    })
+    // console.log(linkId)
+})
+
+router.post("/:id", upload.single("file"), (req, res) => {
     // const cursor = upload.find({id})
     // console.log(id)
 
@@ -91,7 +116,6 @@ router.post("/upload/done", upload.single("file"), (req, res) => {
         })
         const readStream = gridfsBucket.openDownloadStream(id);
         readStream.pipe(res);
-
     })
 })
 
