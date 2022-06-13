@@ -56,8 +56,8 @@ router.get("/", (req, res) => {
     res.sendStatus(404)
 })
 
+// open database connection
 async function main() {
-
     try {
         await client.connect();
         console.log("Connected correctly to server");
@@ -68,15 +68,23 @@ async function main() {
     }
 }
 
+// upload file form
 router.get("/upload", (req, res) => {
     res.render("fileForm")
 })
 
+/*
+ * Uploads user file and creates link for download
+ */
 router.post("/upload/done", upload.single("file"), (req, res) => {
     const link = "localhost:3000/file/" + id
     res.render("fileFormDone", {link: link})
 })
 
+/*
+ * User with link will render this page
+ * Page has button to download file
+ */
 router.get("/:id", (req, res) => {
     const linkId = req.params.id
     const db = client.db(dbName)
@@ -95,17 +103,15 @@ router.get("/:id", (req, res) => {
             res.render("fileLink", {id: linkId})
         }
     })
-    // console.log(linkId)
 })
 
-router.post("/:idHere", (req, res) => {
-    // const cursor = upload.find({id})
-    // console.log(id)
-
-    const linkId = req.params.idHere
+/* 
+ * Download file to user's local computer
+ */
+router.post("/:id", (req, res) => {
+    const linkId = req.params.id
     const db = client.db(dbName)
     const col = db.collection("info")
-    // const myDoc = col.findOne({_id: id}, {password: 1})
 
     const myDoc = gfs.collection("uploads").findOne({_id: linkId}, {password: 1})
     myDoc.then((result) => {
