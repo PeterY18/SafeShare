@@ -43,7 +43,6 @@ const storage = new GridFsStorage({
                 filename: filename,
                 bucketName: 'uploads',
                 id: id,
-                expired: false,
             };
             resolve(fileInfo);
         });
@@ -90,6 +89,7 @@ router.get("/:id", (req, res) => {
         }
         else {
             const dateMade = result.uploadDate
+            console.log(result)
             // console.log(dateMade)
             // console.log(typeof dateMade)
             res.render("fileLink", {id: linkId})
@@ -102,13 +102,14 @@ router.post("/:id", upload.single("file"), (req, res) => {
     // const cursor = upload.find({id})
     // console.log(id)
 
+    const linkId = id
     const db = client.db(dbName)
     const col = db.collection("info")
     // const myDoc = col.findOne({_id: id}, {password: 1})
 
-    const myDoc = gfs.collection("uploads").findOne({_id: id}, {password: 1})
+    const myDoc = gfs.collection("uploads").findOne({_id: linkId}, {password: 1})
     myDoc.then((result) => {
-        console.log(result)
+        // console.log(result)
         let mimeType = result.contentType
         res.set({
             "Content-Type": mimeType,
