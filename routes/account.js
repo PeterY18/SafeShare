@@ -1,3 +1,4 @@
+const create = require("./createId")
 const express = require("express")
 const router = express.Router()
 
@@ -44,7 +45,7 @@ router.post("/upload/done", (req, res) => {
     // "model" that will be inserted into databaase
     let infoDoc = {
         "password": req.body.password,
-        _id: createId(),
+        _id: create.createId(),
         expired: false
     }
   
@@ -108,16 +109,4 @@ router.post("/:id/expire", (req, res) => {
     })
 })
 
-// create a random string of 12 characters
-// base-62 character set
-function createId() {
-    let result = ""
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-    for (var i = 0; i < 12; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length))
-    }
-    return result;
-}
-
-//exports.createId = createId
 module.exports = router
