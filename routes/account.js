@@ -119,4 +119,4 @@ function createId() {
     return result;
 }
 
-module.exports = router
+module.exports = {router, createId}

@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "jest",
     "start": "nodemon app.js",
     "compile": "sass --watch scss:./public/assets/css"
   },
@@ -26,6 +27,7 @@
     "sass": "^1.52.3"
   },
   "devDependencies": {
+    "jest": "^28.1.1",
     "nodemon": "^2.0.16"
   }
 }
