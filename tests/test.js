@@ -1,5 +1,5 @@
-let a = require("../routes/account");
-let f = require("../routes/file");
+const a = require("../routes/account");
+const f = require("../routes/file");
 
 test("creates id with 12 chars", () => {
     let id = a.createId();

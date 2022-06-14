@@ -38,7 +38,7 @@ const storage = new GridFsStorage({
     file: (req, file) => {
         return new Promise((resolve, reject) => {
             const filename = file.originalname;
-            id = account.createId()
+            id = createId()
             const fileInfo = {
                 filename: filename,
                 bucketName: 'uploads',
@@ -124,5 +124,16 @@ router.post("/:id", (req, res) => {
         readStream.pipe(res);
     })
 })
+
+// create a random string of 12 characters
+// base-62 character set
+function createId() {
+    let result = ""
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    for (var i = 0; i < 12; i++) {
+        result += characters.charAt(Math.floor(Math.random() * characters.length))
+    }
+    return result;
+}
 
 module.exports = router
