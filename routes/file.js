@@ -23,39 +23,9 @@ const url = "mongodb+srv://SafeShare:sAlWpKNC6jkncmgT@cluster0.apg9o.mongodb.net
 const client = new MongoClient(url);
 const conn = mongoose.createConnection(url)
 
-let gfs, gridfsBucket
-conn.once("open", () => {
-    gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
-        bucketName: 'uploads'
-    })
-    gfs = Grid(conn.db, mongoose.mongo)
-    gfs.collection("uploads")
-})
-
-let id = ""
-const storage = new GridFsStorage({
-    url: url,
-    file: (req, file) => {
-        return new Promise((resolve, reject) => {
-            const filename = file.originalname;
-            id = createId.createId()
-            const fileInfo = {
-                filename: filename,
-                bucketName: 'uploads',
-                id: id,
-            };
-            resolve(fileInfo);
-        });
-    }
-  });
-const upload = multer({ storage });
+const day = 86400000
 
 const dbName = "file";
-
-router.get("/", (req, res) => {
-    res.sendStatus(404)
-})
-
 // open database connection
 async function main() {
     try {
@@ -68,6 +38,37 @@ async function main() {
     }
 }
 
+let gfs, gridfsBucket
+conn.once("open", () => {
+    gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
+        bucketName: 'uploads'
+    })
+    gfs = Grid(conn.db, mongoose.mongo)
+    gfs.collection("uploads")
+})
+
+let id = createId.createId()
+const storage = new GridFsStorage({
+    url: url,
+    file: (req, file) => {
+        return new Promise((resolve, reject) => {
+            const filename = file.originalname;
+            const fileInfo = {
+                filename: filename,
+                bucketName: 'uploads',
+                id: id,
+            };
+            resolve(fileInfo);
+        });
+    }
+  });
+
+const upload = multer({ storage });
+
+router.get("/", (req, res) => {
+    res.sendStatus(404)
+})
+
 // upload file form
 router.get("/upload", (req, res) => {
     res.render("fileForm")
@@ -78,6 +79,18 @@ router.get("/upload", (req, res) => {
  */
 router.post("/upload/done", upload.single("file"), (req, res) => {
     const link = "localhost:3000/file/" + id
+
+    const db = client.db(dbName);
+    const col = db.collection("file");
+
+    let fileDoc = {
+        id: id,
+        expiredBy: Date.now() + (day * 1),
+        expired: false
+    }
+    
+    const p = col.insertOne(fileDoc);
+
     res.render("fileFormDone", {link: link})
 })
 
@@ -110,8 +123,6 @@ router.get("/:id", (req, res) => {
  */
 router.post("/:id", (req, res) => {
     const linkId = req.params.id
-    const db = client.db(dbName)
-    const col = db.collection("info")
 
     const myDoc = gfs.collection("uploads").findOne({_id: linkId}, {password: 1})
     myDoc.then((result) => {
