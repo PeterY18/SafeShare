@@ -18,9 +18,9 @@ app.set("views", __dirname + "/views")
 app.set('layout', 'layouts/layout')
 app.use(expressLayouts)
 
-// account router
-const accountRouter = require("./routes/account")
-app.use("/account", accountRouter)
+// credential router
+const credentialRouter = require("./routes/credential")
+app.use("/credential", credentialRouter)
 
 // file router
 const fileRouter = require("./routes/file")

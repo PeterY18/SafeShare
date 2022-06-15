@@ -1,4 +1,4 @@
-const a = require("../routes/account");
+const a = require("../routes/credential");
 const f = require("../routes/file");
 const create = require("../routes/createId")
 

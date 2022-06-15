@@ -12,7 +12,7 @@ const { info } = require("console")
 const url = "mongodb+srv://SafeShare:sAlWpKNC6jkncmgT@cluster0.apg9o.mongodb.net/?retryWrites=true&w=majority"
 const client = new MongoClient(url);
 
-const dbName = "account";
+const dbName = "credential";
 async function main() {
 
     try {
@@ -53,7 +53,7 @@ router.post("/upload/done", (req, res) => {
   
     // generate link location
     // TODO: fefactor to dyanamically create path using nodejs global var
-    const link = "localhost:3000/account/" + infoDoc._id
+    const link = "localhost:3000/credential/" + infoDoc._id
     
     res.render("credential/formDone", {link: link})
 })

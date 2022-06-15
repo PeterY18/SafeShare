@@ -50,7 +50,7 @@ const storage = new GridFsStorage({
   });
 const upload = multer({ storage });
 
-const dbName = "account";
+const dbName = "file";
 
 router.get("/", (req, res) => {
     res.sendStatus(404)
