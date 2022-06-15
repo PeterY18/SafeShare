@@ -10,6 +10,7 @@ const GridFsStorage = require("multer-gridfs-storage").GridFsStorage
 const Grid = require("gridfs-stream")
 const methodOverride = require("method-override")
 const crypto = require("crypto")
+const checkExpired = require("./helperFunctions/checkExpired")
 
 
 router.use(bodyParser.json())
@@ -85,7 +86,7 @@ router.post("/upload/done", upload.single("file"), (req, res) => {
 
     let fileDoc = {
         id: id,
-        expiredBy: Date.now() + (day * 1),
+        expiredBy: Date.now() + (day * 2),
         expired: false
     }
     
