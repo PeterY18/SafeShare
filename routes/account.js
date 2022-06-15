@@ -76,7 +76,7 @@ router.get("/:id", (req, res) => {
           const expired = result.expired
           // if link has not expired, render password page
           if (expired == false) {
-              res.render("accountLink", {id: id})
+              res.render("credential/link", {id: id})
           }
           // if link is expired, respond with 404
           else {
@@ -105,7 +105,7 @@ router.post("/:id/expire", (req, res) => {
     const myDoc = col.findOne({_id: id}, {password: 1})
     myDoc.then((result) => {
         const password = result.password
-        res.render("accountFormExpire", {password: password})
+        res.render("credential/expire", {password: password})
     })
 })
 
