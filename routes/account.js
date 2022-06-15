@@ -23,7 +23,7 @@ router.get("/", (req, res) => {
 })
 
 router.get("/upload", (req, res) => {
-    res.render("accountForm")
+    res.render("credential/form")
 })
 
 async function main() {
@@ -56,7 +56,7 @@ router.post("/upload/done", (req, res) => {
     // TODO: fefactor to dyanamically create path using nodejs global var
     const link = "localhost:3000/account/" + infoDoc._id
     
-    res.render("accountFormDone", {link: link})
+    res.render("credential/formDone", {link: link})
 })
 
 router.get("/:id", (req, res) => {
