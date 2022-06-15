@@ -100,6 +100,7 @@ router.post("/:id/expire", (req, res) => {
 
     // update row
     col.updateOne(query, update)
+    // col.deleteOne
 
     // get password from database to render to user
     const myDoc = col.findOne({_id: id}, {password: 1})
