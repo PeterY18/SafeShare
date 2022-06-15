@@ -71,7 +71,7 @@ router.get("/", (req, res) => {
 
 // upload file form
 router.get("/upload", (req, res) => {
-    res.render("fileForm")
+    res.render("file/form")
 })
 
 /*
@@ -91,7 +91,7 @@ router.post("/upload/done", upload.single("file"), (req, res) => {
     
     const p = col.insertOne(fileDoc);
 
-    res.render("fileFormDone", {link: link})
+    res.render("file/formDone", {link: link})
 })
 
 /*
@@ -113,7 +113,7 @@ router.get("/:id", (req, res) => {
             // console.log(result)
             // console.log(dateMade)
             // console.log(typeof dateMade)
-            res.render("fileLink", {id: linkId})
+            res.render("file/link", {id: linkId})
         }
     })
 })

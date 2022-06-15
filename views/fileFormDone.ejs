@@ -14,12 +14,6 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col">
-          <h1>Done! Your Link Is</h1>
-          <h2><br><b><%= locals.link %></b></h2>
-          <input class="d-none" type="text" value="<%= locals.link %>" id="link">
-          <button class="btn btn-success m-3" onclick="copy()">Copy
-          Link</button>
-
           <script>
             function copy() {
               const copyText = document.getElementById("link");
