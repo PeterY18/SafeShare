@@ -7,6 +7,7 @@ const algorithm = "aes-256-cbc"
 const initVector = crypto.randomBytes(16)
 const securityKey = crypto.randomBytes(32)
 const cipher = crypto-crypto.createCipheriv(algorithm, securityKey, initVector)
+const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector);
 
 require('dotenv').config();
 
@@ -17,15 +18,6 @@ const url = "mongodb+srv://SafeShare:sAlWpKNC6jkncmgT@cluster0.apg9o.mongodb.net
 const client = new MongoClient(url);
 
 const dbName = "account";
-
-router.get("/", (req, res) => {
-    res.sendStatus(404)
-})
-
-router.get("/upload", (req, res) => {
-    res.render("credential/form")
-})
-
 async function main() {
 
     try {
@@ -38,12 +30,21 @@ async function main() {
     }
 }
 
+router.get("/", (req, res) => {
+    res.sendStatus(404)
+})
+
+router.get("/upload", (req, res) => {
+    res.render("credential/form")
+})
+
 router.post("/upload/done", (req, res) => {
     const db = client.db(dbName);
     const col = db.collection("info");
 
     // "model" that will be inserted into databaase
     let infoDoc = {
+        "username": req.body.username,
         "password": req.body.password,
         _id: create.createId(),
         expired: false
@@ -106,7 +107,8 @@ router.post("/:id/expire", (req, res) => {
     const myDoc = col.findOne({_id: id}, {password: 1})
     myDoc.then((result) => {
         const password = result.password
-        res.render("credential/expire", {password: password})
+        const username = result.username
+        res.render("credential/expire", {password: password, username: username})
     })
 })
 
