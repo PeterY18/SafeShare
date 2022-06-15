@@ -68,19 +68,12 @@ router.get("/:id", (req, res) => {
     const myDoc = col.findOne({_id: id}, {password: 1})
     myDoc.then((result) => {
         // if the id is not in the database, respond with 404
-        if (result == null) {
+        if (result === null) {
+            console.log("DNE")
             res.sendStatus(404)
         }
         else {
-          const expired = result.expired
-          // if link has not expired, render password page
-          if (expired == false) {
-              res.render("credential/link", {id: id})
-          }
-          // if link is expired, respond with 404
-          else {
-              res.sendStatus(404)
-          }
+            res.render("credential/link", {id: id})
         }
     })
 })
@@ -93,19 +86,12 @@ router.post("/:id/expire", (req, res) => {
     // id variable
     const id = String(req.params.id)
 
-    // update row parameters
-    const query = {_id: id}
-    const update = { $set: {expired: true}}
-
-    // update row
-    col.updateOne(query, update)
-    // col.deleteOne
-
     // get password from database to render to user
     const myDoc = col.findOne({_id: id}, {password: 1})
     myDoc.then((result) => {
         const password = decrypt(result.password)
         const username = decrypt(result.username)
+        col.deleteOne({_id: id}, {password: 1})
         res.render("credential/expire", {password: password, username: username})
     })
 })
