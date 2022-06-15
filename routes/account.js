@@ -2,12 +2,7 @@ const create = require("./createId")
 const express = require("express")
 const router = express.Router()
 
-const crypto = require("crypto")
-const algorithm = "aes-256-cbc"
-const initVector = crypto.randomBytes(16)
-const securityKey = crypto.randomBytes(32)
-const cipher = crypto-crypto.createCipheriv(algorithm, securityKey, initVector)
-const decipher = crypto.createDecipheriv(algorithm, securityKey, initVector);
+const { encrypt, decrypt } = require('./helperFunctions/crypto');
 
 require('dotenv').config();
 
@@ -42,10 +37,13 @@ router.post("/upload/done", (req, res) => {
     const db = client.db(dbName);
     const col = db.collection("info");
 
+    const username = encrypt(req.body.username);
+    const password = encrypt(req.body.password);
+
     // "model" that will be inserted into databaase
     let infoDoc = {
-        "username": req.body.username,
-        "password": req.body.password,
+        "username": username,
+        "password": password,
         _id: create.createId(),
         expired: false
     }
@@ -106,8 +104,8 @@ router.post("/:id/expire", (req, res) => {
     // get password from database to render to user
     const myDoc = col.findOne({_id: id}, {password: 1})
     myDoc.then((result) => {
-        const password = result.password
-        const username = result.username
+        const password = decrypt(result.password)
+        const username = decrypt(result.username)
         res.render("credential/expire", {password: password, username: username})
     })
 })
