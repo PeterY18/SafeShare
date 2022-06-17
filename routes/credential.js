@@ -19,7 +19,6 @@ async function main() {
         await client.connect();
         console.log("Connected correctly to server");
         const db = client.db(dbName);
-        // Use the collection "people"
        } catch (err) {
         console.log(err.stack);
     }

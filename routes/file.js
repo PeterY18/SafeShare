@@ -10,7 +10,6 @@ const GridFsStorage = require("multer-gridfs-storage").GridFsStorage
 const Grid = require("gridfs-stream")
 const methodOverride = require("method-override")
 const crypto = require("crypto")
-const checkExpired = require("./helperFunctions/checkExpired")
 
 
 router.use(bodyParser.json())
@@ -33,7 +32,6 @@ async function main() {
         await client.connect();
         console.log("Connected correctly to server");
         const db = client.db(dbName);
-        // Use the collection "people"
        } catch (err) {
         console.log(err.stack);
     }
