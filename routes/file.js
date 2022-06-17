@@ -86,7 +86,8 @@ router.post("/upload/done", upload.single("file"), (req, res) => {
 
     let fileDoc = {
         id: id,
-        expiredBy: Date.now() + (day * 2),
+        // expiredBy: Date.now() + (day * 1),
+        expiredBy: Date.now() + 1,
         expired: false
     }
     
@@ -103,18 +104,26 @@ router.get("/:id", (req, res) => {
     const linkId = req.params.id
     const db = client.db(dbName)
     const col = db.collection("info")
+    const fileCol = db.collection("file")
 
     const myDoc = gfs.collection("uploads").findOne({_id: linkId}, {password: 1})
+    const fileDoc = fileCol.findOne({id: linkId}, {password: 1})
     myDoc.then((result) => {
         if (result == null) {
             res.sendStatus(404)
         }
         else {
-            const dateMade = result.uploadDate
-            // console.log(result)
-            // console.log(dateMade)
-            // console.log(typeof dateMade)
-            res.render("file/link", {id: linkId})
+            fileDoc.then((innerResult) => {
+                console.log(innerResult)
+                const dateExpired = innerResult.expiredBy
+                if (Date.now() > dateExpired) {
+                    res.sendStatus(404)
+                    fileCol.updateOne({id: linkId}, {$set: {expired: true}})
+                }
+                else {
+                    res.render("file/download", {id: linkId})
+                }
+            })
         }
     })
 })
@@ -135,6 +144,14 @@ router.post("/:id", (req, res) => {
         const readStream = gridfsBucket.openDownloadStream(linkId);
         readStream.pipe(res);
     })
+})
+
+// import schedule from "node-schedule"
+const schedule = require("node-schedule")
+schedule.scheduleJob('0 0 * * *', () => {
+    const db = client.db(dbName)
+    const fileCol = db.collection("file")
+    fileCol.deleteMany({expired: true})
 })
 
 module.exports = router
