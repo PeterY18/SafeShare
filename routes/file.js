@@ -10,6 +10,7 @@ const GridFsStorage = require("multer-gridfs-storage").GridFsStorage
 const Grid = require("gridfs-stream")
 const methodOverride = require("method-override")
 const crypto = require("crypto")
+const { encrypt, decrypt } = require('./helperFunctions/crypto');
 
 
 router.use(bodyParser.json())
@@ -51,7 +52,7 @@ const storage = new GridFsStorage({
     url: url,
     file: (req, file) => {
         return new Promise((resolve, reject) => {
-            const filename = file.originalname;
+            const filename = encrypt(file.originalname);
             const fileInfo = {
                 filename: filename,
                 bucketName: 'uploads',
@@ -84,8 +85,8 @@ router.post("/upload/done", upload.single("file"), (req, res) => {
 
     let fileDoc = {
         id: id,
-        // expiredBy: Date.now() + (day * 1),
-        expiredBy: Date.now() + 1,
+        expiredBy: Date.now() + (day * 1),
+        // expiredBy: Date.now() + 1,
         expired: false
     }
     
@@ -112,7 +113,7 @@ router.get("/:id", (req, res) => {
         }
         else {
             fileDoc.then((innerResult) => {
-                console.log(innerResult)
+                // console.log(innerResult)
                 const dateExpired = innerResult.expiredBy
                 if (Date.now() > dateExpired) {
                     res.sendStatus(404)
@@ -137,7 +138,7 @@ router.post("/:id", (req, res) => {
         let mimeType = result.contentType
         res.set({
             "Content-Type": mimeType,
-            "Content-Disposition": "attatchmenet; filename=" + result.filename
+            "Content-Disposition": "attatchmenet; filename=" + decrypt(result.filename)
         })
         const readStream = gridfsBucket.openDownloadStream(linkId);
         readStream.pipe(res);
