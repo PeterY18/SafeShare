@@ -93,10 +93,23 @@ async function main() {
       const myDoc = gfs.collection("testFiles").findOne()
       const fileDoc = fileCol.findOne()
 
-      expect(myDoc).not.toBe(null)
+      expect(fileDoc).not.toBe(null)
       gfs.dropCollection("testFiles")
    })
  })
+
+ test("item deletes from db", () => {
+   const col = conn.createCollection("testCol")
+   const response = items.create({
+       name: "NAME"
+   });
+
+   items.insertMany(response)
+   items.findByIdAndRemove(response.id)
+
+   expect(items.findById(response.id)).not.toBe(null)
+   conn.dropCollection(col)
+})
 
  client.close();
  conn.close();
