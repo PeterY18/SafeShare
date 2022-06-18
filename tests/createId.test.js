@@ -11,6 +11,16 @@ test("creates id with 12 chars", () => {
 
 test('no special chars', () =>{
     let id1 = create.createId();
-    expect(id1).toEqual(expect.not.stringMatching("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"));
+    let wrong = false
+    
+    for(let i = 0; i < 12; i++)
+    {
+        if(id1.charAt(i))
+        {
+            
+        }
+    }
+
+    expect(wrong).toBe(false)
 })
 
