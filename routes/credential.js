@@ -15,16 +15,6 @@ const url = process.env.DB_URL
 const client = new MongoClient(url)
 const dbName = "credential"
 
-async function main() {
-    try {
-        await client.connect()
-        console.log("Connected correctly to server")
-        const db = client.db(dbName)
-       } catch (err) {
-        console.log(err.stack)
-    }
-}
-
 // there is no route for "/"
 router.get("/", (req, res) => {
     res.sendStatus(404)

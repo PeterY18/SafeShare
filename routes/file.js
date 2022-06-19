@@ -28,17 +28,6 @@ const dbName = "file";
 
 const day = 86400000
 
-// open database connection
-async function main() {
-    try {
-        await client.connect();
-        console.log("Connected correctly to server");
-        const db = client.db(dbName);
-       } catch (err) {
-        console.log(err.stack);
-    }
-}
-
 // setup GridFS for mongodb
 let gfs, gridfsBucket
 conn.once("open", () => {

@@ -18,6 +18,9 @@ app.set("views", __dirname + "/views")
 app.set('layout', 'layouts/layout')
 app.use(expressLayouts)
 
+const bodyParser = require("body-parser")
+const body = require("body")
+app.use(bodyParser.json())
 // credential router
 const credentialRouter = require("./routes/credential")
 app.use("/credential", credentialRouter)
@@ -27,3 +30,4 @@ const fileRouter = require("./routes/file")
 app.use("/file", fileRouter)
 
 app.listen(3000)
+module.exports = app
