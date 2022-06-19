@@ -1,32 +1,33 @@
-const createId = require("./helperFunctions/createId")
+// expressjs routing setup
 const express = require("express")
 const router = express.Router()
 
-const bodyParser = require("body-parser")
-const path = require("path")
+// load environment variables
+require('dotenv').config();
+
+// mongodb and file uploads
 const mongoose = require("mongoose")
 const multer = require("multer")
 const GridFsStorage = require("multer-gridfs-storage").GridFsStorage
 const Grid = require("gridfs-stream")
+const bodyParser = require("body-parser")
 const methodOverride = require("method-override")
-const crypto = require("crypto")
-const { encrypt, decrypt } = require('./helperFunctions/crypto');
-
-
 router.use(bodyParser.json())
 router.use(methodOverride("_method"))
+const {MongoClient} = require("mongodb");
 
-const {MongoClient, ObjectId} = require('mongodb');
-const { info } = require("console")
-const { create } = require("domain")
+// helper functions
+const { encrypt, decrypt } = require("./helperFunctions/crypto")
+const createId = require("./helperFunctions/createId")
 
-const url = "mongodb+srv://SafeShare:sAlWpKNC6jkncmgT@cluster0.apg9o.mongodb.net/?retryWrites=true&w=majority"
-const client = new MongoClient(url);
+// mongodb connection constants
+const url = process.env.DB_URL
+const client = new MongoClient(url)
 const conn = mongoose.createConnection(url)
+const dbName = "file";
 
 const day = 86400000
 
-const dbName = "file";
 // open database connection
 async function main() {
     try {
@@ -38,6 +39,7 @@ async function main() {
     }
 }
 
+// setup GridFS for mongodb
 let gfs, gridfsBucket
 conn.once("open", () => {
     gridfsBucket = new mongoose.mongo.GridFSBucket(conn.db, {
@@ -47,6 +49,7 @@ conn.once("open", () => {
     gfs.collection("uploads")
 })
 
+// setup multer to work with GridFS
 let id = createId.createId()
 const storage = new GridFsStorage({
     url: url,
@@ -62,9 +65,9 @@ const storage = new GridFsStorage({
         });
     }
   });
-
 const upload = multer({ storage });
 
+// there is no route for "/"
 router.get("/", (req, res) => {
     res.sendStatus(404)
 })
@@ -146,6 +149,7 @@ router.post("/:id", (req, res) => {
 })
 
 // import schedule from "node-schedule"
+// Delete expired files at midnight
 const schedule = require("node-schedule")
 schedule.scheduleJob('0 0 * * *', () => {
     const db = client.db(dbName)

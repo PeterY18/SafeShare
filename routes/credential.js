@@ -1,41 +1,47 @@
-const create = require("./helperFunctions/createId")
+// expressjs routing setup
 const express = require("express")
 const router = express.Router()
 
-const { encrypt, decrypt } = require('./helperFunctions/crypto');
+// load environment variables
+require('dotenv').config()
 
-require('dotenv').config();
+// helper functions
+const { encrypt, decrypt } = require('./helperFunctions/crypto')
+const create = require("./helperFunctions/createId")
 
-const {MongoClient, ObjectId} = require('mongodb');
-const { info } = require("console")
+// mongodb connection constants
+const {MongoClient} = require('mongodb')
+const url = process.env.DB_URL
+const client = new MongoClient(url)
+const dbName = "credential"
 
-const url = "mongodb+srv://SafeShare:sAlWpKNC6jkncmgT@cluster0.apg9o.mongodb.net/?retryWrites=true&w=majority"
-const client = new MongoClient(url);
-
-const dbName = "credential";
 async function main() {
-
     try {
-        await client.connect();
-        console.log("Connected correctly to server");
-        const db = client.db(dbName);
+        await client.connect()
+        console.log("Connected correctly to server")
+        const db = client.db(dbName)
        } catch (err) {
-        console.log(err.stack);
+        console.log(err.stack)
     }
 }
 
+// there is no route for "/"
 router.get("/", (req, res) => {
     res.sendStatus(404)
 })
 
+// renders a form for the user to enter username and password
 router.get("/upload", (req, res) => {
     res.render("credential/form")
 })
 
+// handle user submitted username and password
 router.post("/upload/done", (req, res) => {
+    // db connection constants
     const db = client.db(dbName);
     const col = db.collection("info");
 
+    // encrypt username and password
     const username = encrypt(req.body.username);
     const password = encrypt(req.body.password);
 
@@ -57,6 +63,7 @@ router.post("/upload/done", (req, res) => {
     res.render("credential/formDone", {link: link})
 })
 
+// user enters link to access button to reveal crednetials
 router.get("/:id", (req, res) => {
     // query database using req.params.id
     const id = String(req.params.id)
@@ -68,7 +75,6 @@ router.get("/:id", (req, res) => {
     myDoc.then((result) => {
         // if the id is not in the database, respond with 404
         if (result === null) {
-            console.log("DNE")
             res.sendStatus(404)
         }
         else {
@@ -77,6 +83,7 @@ router.get("/:id", (req, res) => {
     })
 })
 
+// user clicked on link, reveals credential, and expires link
 router.post("/:id/expire", (req, res) => {
     // database connection
     const db = client.db(dbName)
@@ -88,8 +95,11 @@ router.post("/:id/expire", (req, res) => {
     // get password from database to render to user
     const myDoc = col.findOne({_id: id}, {password: 1})
     myDoc.then((result) => {
+        // decrypt information
         const password = decrypt(result.password)
         const username = decrypt(result.username)
+
+        // delete crednetial from database
         col.deleteOne({_id: id}, {password: 1})
         res.render("credential/expire", {password: password, username: username})
     })
