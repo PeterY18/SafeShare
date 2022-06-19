@@ -1,4 +1,4 @@
-const createId = require("./createId")
+const createId = require("../routes/createId")
 const express = require("express")
 const router = express.Router()
 
