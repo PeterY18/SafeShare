@@ -74,10 +74,28 @@ describe("file", () => {
         expect(res.statusCode).toEqual(200)
     })
 
-    /*
     it("test '/file/upload/done'", async () => {
-        const res = await request(app).post("/file/upload/done").attach("gitignore", "`${__dirname}/sample.txt`")
+        jest.setTimeout(30000)
+        // const res = await request(app).post("/file/upload/done").attach("sample", `${__dirname}/sample.txt`)
+        const res = await request(app).post("/file/upload/done").attach("file", "/home/pyuan/SafeShare/tests/sample.txt", { contentType: "text/plain"})
         expect(res.statusCode).toEqual(200)
+
+        const htmlOut = res.text
+        const $ = cheerio.load(htmlOut)
+        const linkHolder = $("#toCopy").text("")
+        const link = linkHolder[0].attribs.value
+        const splitLink = link.split("/")
+        const id = splitLink[2]
+
+        // test when fileid is incorrect
+        const res2 = await request(app).get("/file/" + id + "1")
+        expect(res2.statusCode).toEqual(404)
+
+        const res3 = await request(app).get("/file/" + id)
+        expect(res3.statusCode).toEqual(200)
+
+        const res4 = await request(app).post("/file/" + id)
+        expect(res4.statusCode).toEqual(200)
+
     })
-    */
 })
