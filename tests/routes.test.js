@@ -91,11 +91,12 @@ describe("file", () => {
         const res2 = await request(app).get("/file/" + id + "1")
         expect(res2.statusCode).toEqual(404)
 
+        // test getting id
         const res3 = await request(app).get("/file/" + id)
         expect(res3.statusCode).toEqual(200)
 
+        // test post when user clicks download
         const res4 = await request(app).post("/file/" + id)
         expect(res4.statusCode).toEqual(200)
-
     })
 })

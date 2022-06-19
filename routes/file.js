@@ -74,6 +74,7 @@ router.post("/upload/done", upload.single("file"), (req, res) => {
 
     const db = client.db(dbName);
     const col = db.collection("file");
+    console.log(res)
 
     let fileDoc = {
         id: id,
@@ -97,16 +98,17 @@ router.get("/:id", (req, res) => {
     const col = db.collection("info")
     const fileCol = db.collection("file")
 
-    const myDoc = gfs.collection("uploads").findOne({_id: linkId}, {password: 1})
-    const fileDoc = fileCol.findOne({id: linkId}, {password: 1})
-    myDoc.then((result) => {
-        if (result == null) {
-            res.sendStatus(404)
-        }
-        else {
-            fileDoc.then((innerResult) => {
-                // console.log(innerResult)
-                const dateExpired = innerResult.expiredBy
+
+    const load = async () => {
+        try {
+            const myDoc = await gfs.collection("uploads").findOne({_id: linkId}, {password: 1})
+            const fileDoc = await fileCol.findOne({id: linkId}, {password: 1})
+
+            if (myDoc == null) {
+                res.sendStatus(404)
+            }
+            else {
+                const dateExpired = fileDoc.expiredBy
                 if (Date.now() > dateExpired) {
                     res.sendStatus(404)
                     fileCol.updateOne({id: linkId}, {$set: {expired: true}})
@@ -114,9 +116,15 @@ router.get("/:id", (req, res) => {
                 else {
                     res.render("file/download", {id: linkId})
                 }
-            })
+ 
+            }
         }
-    })
+        catch (err) {
+            res.render(500)
+            console.log(err)
+        }
+    }
+    load()
 })
 
 /* 
