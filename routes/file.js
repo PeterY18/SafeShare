@@ -120,7 +120,7 @@ router.get("/:id", (req, res) => {
             }
         }
         catch (err) {
-            res.render(500)
+            res.render(404)
             console.log(err)
         }
     }
