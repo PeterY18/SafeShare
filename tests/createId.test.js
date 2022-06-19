@@ -11,16 +11,6 @@ test("creates id with 12 chars", () => {
 
 test('no special chars', () =>{
     let id1 = create.createId();
-    let wrong = false
-    
-    for(let i = 0; i < 12; i++)
-    {
-        if(id1.charAt(i))
-        {
-            
-        }
-    }
-
-    expect(wrong).toBe(false)
+    let checker = /^[A-Za-z0-9]*$/.test(id1) // checking if the string only contains letters and numbers 
+    expect(checker).toBe(true);
 })
-
