@@ -74,7 +74,6 @@ router.post("/upload/done", upload.single("file"), (req, res) => {
 
     const db = client.db(dbName);
     const col = db.collection("file");
-    console.log(res)
 
     let fileDoc = {
         id: id,
