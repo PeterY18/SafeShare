@@ -16,6 +16,6 @@ test("encrypt", () => {
 
 test("decrypt", () => {
  const checker = encrypt("bob");
- const decryptChecker = decrypt(checker) // putting the orginal word in here but its supposed to be hash??
+ const decryptChecker = decrypt(checker) 
  expect(decryptChecker).toEqual("bob")
 });
