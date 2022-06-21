@@ -78,7 +78,6 @@ router.post("/upload/done", upload.single("file"), (req, res) => {
     let fileDoc = {
         id: id,
         expiredBy: Date.now() + (day * 1),
-        // expiredBy: Date.now() + 1,
         expired: false
     }
     
